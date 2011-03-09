@@ -1,8 +1,13 @@
 package xattr
 
 import (
+	"bytes"
 	"syscall"
 	"os"
+)
+
+const (
+	userPrefix = "user."
 )
 
 // Linux xattrs have a manditory prefix of "user.". This is prepended 
@@ -22,7 +27,7 @@ func (e *XAttrError) String() string {
 
 // Retrieve extended attribute data associated with path.
 func Getxattr(path, name string) ([]byte, os.Error) {
-	name = "user." + name
+	name = userPrefix + name
 	data, err := syscall.Getxattr(path, name)
 	if err != 0 {
 		return nil, &XAttrError{"getxattr", path, name, os.Errno(err)}
@@ -42,7 +47,7 @@ func Listxattr(path string) ([]string, os.Error) {
 
 // Associates name and data together as an attribute of path. 
 func Setxattr(path, name string, data []byte) os.Error {
-	name = "user." + name
+	name = userPrefix + name
 	err := syscall.Setxattr(path, name, data)
 	if err != 0 {
 		return &XAttrError{"setxattr", path, name, os.Errno(err)}
@@ -52,7 +57,7 @@ func Setxattr(path, name string, data []byte) os.Error {
 
 // Remove the attribute.
 func Removexattr(path, name string) os.Error {
-	name = "user." + name
+	name = userPrefix + name
 	err := syscall.Removexattr(path, name)
 	if err != 0 {
 		return &XAttrError{"removexattr", path, name, os.Errno(err)}
@@ -63,7 +68,7 @@ func Removexattr(path, name string) os.Error {
 // Strip off "user." prefixes from attribute names.
 func stripUserPrefix(s []string) []string {
 	for i, a := range s {
-		if len(a) > 5 && string(a[0:4]) == "user." {
+		if bytes.HasPrefix(a, userPrefix) {
 			s[i] = a[5:]
 		}
 	}
