@@ -31,8 +31,3 @@ func setxattr(path string, name string, value []byte) (errno int) {
 	return
 }
 
-func removexattr(path string, name string) (errno int) {
-	_, _, e1 := syscall.Syscall(syscall.SYS_REMOVEXATTR, uintptr(unsafe.Pointer(syscall.StringBytePtr(path))), uintptr(unsafe.Pointer(syscall.StringBytePtr(name))), 0)
-	errno = int(e1)
-	return
-}

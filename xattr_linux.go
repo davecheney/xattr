@@ -49,8 +49,8 @@ func Listxattr(path string) ([]string, os.Error) {
 // Associates name and data together as an attribute of path. 
 func Setxattr(path, name string, data []byte) os.Error {
 	name = userPrefix + name
-	e:= setxattr(path, name, &data[0], len(data))
-	if e!= 0 {
+	e := setxattr(path, name, data)
+	if e != 0 {
 		return &XAttrError{"setxattr", path, name, os.Errno(e)}
 	}
 	return nil
