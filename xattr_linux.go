@@ -12,26 +12,21 @@ const (
 // Linux xattrs have a manditory prefix of "user.". This is prepended 
 // transparently for Get/Set/Remove and hidden in List
 
-// XAttrError records an error and the operation, file path and attribute that caused it.
-type XAttrError struct {
-	Op    string
-	Path  string
-	Name  string
-	Error os.Error
-}
-
-func (e *XAttrError) String() string {
-	return e.Op + " " + e.Path + " " + e.Name + ": " + e.Error.String()
-}
-
 // Retrieve extended attribute data associated with path.
 func Getxattr(path, name string) ([]byte, os.Error) {
 	name = userPrefix + name
-	data, e := getxattr(path, name)
+	// find size.
+	size, e := getxattr(path, name, nil, 0)
 	if e != 0 {
 		return nil, &XAttrError{"getxattr", path, name, os.Errno(e)}
 	}
-	return data, nil
+	buf := make([]byte, size)
+	// Read into buffer of that size.
+	read, e := getxattr(path, name, &buf[0], size)
+	if e != 0 {
+		return nil, &XAttrError{"getxattr", path, name, os.Errno(e)}
+	}
+	return buf[:read], nil
 }
 
 // Retrieves a list of names of extended attributes associated with the 

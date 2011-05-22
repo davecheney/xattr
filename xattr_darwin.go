@@ -4,18 +4,6 @@ import (
 	"os"
 )
 
-// XAttrError records an error and the operation, file path and attribute that caused it.
-type XAttrError struct {
-	Op    string
-	Path  string
-	Name  string
-	Error os.Error
-}
-
-func (e *XAttrError) String() string {
-	return e.Op + " " + e.Path + " " + e.Name + ": " + e.Error.String()
-}
-
 // Retrieve extended attribute data associated with path.
 func Getxattr(path, name string) ([]byte, os.Error) {
 	// find size.
