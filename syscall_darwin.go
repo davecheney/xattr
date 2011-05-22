@@ -1,39 +1,32 @@
 package xattr
 
-func Getxattr0(path, name string) (buf []byte, errno int) {
-	// find size.
-	size, err := getxattr(path, name, nil, 0, 0, 0)
-	if err != 0 {
-		return nil, err
-	}
-	buf = make([]byte, size)
-	// Read into buffer of that size.
-	read, err := getxattr(path, name, &buf[0], size, 0, 0)
-	if err != 0 {
-		return nil, err
-	}
-	return buf[:read], 0
+import (
+	"syscall"
+	"unsafe"
+)
+
+func getxattr(path string, name string, value *byte, size int, pos int, options int) (n int, errno int) {
+	r0, _, e1 := syscall.Syscall6(syscall.SYS_GETXATTR, uintptr(unsafe.Pointer(syscall.StringBytePtr(path))), uintptr(unsafe.Pointer(syscall.StringBytePtr(name))), uintptr(unsafe.Pointer(value)), uintptr(size), uintptr(pos), uintptr(options))
+	n = int(r0)
+	errno = int(e1)
+	return
 }
 
-func Listxattr0(path string) (buf []byte, errno int) {
-	// find size.
-	size, err := listxattr(path, nil, 0, 0)
-	if err != 0 {
-		return nil, err
-	}
-	buf = make([]byte, size)
-	// Read into buffer of that size.
-	read, err := listxattr(path, &buf[0], size, 0)
-	if err != 0 {
-		return nil, err
-	}
-	return buf[:read], 0
+func listxattr(path string, namebuf *byte, size int, options int) (n int, errno int) {
+	r0, _, e1 := syscall.Syscall6(syscall.SYS_LISTXATTR, uintptr(unsafe.Pointer(syscall.StringBytePtr(path))), uintptr(unsafe.Pointer(namebuf)), uintptr(size), uintptr(options), 0, 0)
+	n = int(r0)
+	errno = int(e1)
+	return
 }
 
-func Setxattr0(path string, name string, value []byte) (errno int) {
-	return setxattr(path, name, &value[0], len(value), 0, 0)
+func setxattr(path string, name string, value *byte, size int, pos int, options int) (errno int) {
+	_, _, e1 := syscall.Syscall6(syscall.SYS_SETXATTR, uintptr(unsafe.Pointer(syscall.StringBytePtr(path))), uintptr(unsafe.Pointer(syscall.StringBytePtr(name))), uintptr(unsafe.Pointer(value)), uintptr(size), uintptr(pos), uintptr(options))
+	errno = int(e1)
+	return
 }
 
-func Removexattr0(path string, name string) (errno int) {
-	return removexattr(path, name, 0)
+func removexattr(path string, name string, options int) (errno int) {
+	_, _, e1 := syscall.Syscall(syscall.SYS_REMOVEXATTR, uintptr(unsafe.Pointer(syscall.StringBytePtr(path))), uintptr(unsafe.Pointer(syscall.StringBytePtr(name))), uintptr(options))
+	errno = int(e1)
+	return
 }

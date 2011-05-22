@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/davecheney/xattr"
 	"flag"
-	"log"	
+	"log"
 )
 
 func main() {
