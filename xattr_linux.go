@@ -1,7 +1,7 @@
 package xattr
 
 import (
-	"bytes"
+	"strings"
 	"syscall"
 	"os"
 )
@@ -68,7 +68,7 @@ func Removexattr(path, name string) os.Error {
 // Strip off "user." prefixes from attribute names.
 func stripUserPrefix(s []string) []string {
 	for i, a := range s {
-		if bytes.HasPrefix(a, userPrefix) {
+		if strings.HasPrefix(a, userPrefix) {
 			s[i] = a[5:]
 		}
 	}
