@@ -2,7 +2,6 @@ package xattr
 
 import (
 	"strings"
-	"syscall"
 	"os"
 )
 
@@ -28,9 +27,9 @@ func (e *XAttrError) String() string {
 // Retrieve extended attribute data associated with path.
 func Getxattr(path, name string) ([]byte, os.Error) {
 	name = userPrefix + name
-	data, err := syscall.Getxattr(path, name)
-	if err != 0 {
-		return nil, &XAttrError{"getxattr", path, name, os.Errno(err)}
+	data, e := getxattr(path, name)
+	if e != 0 {
+		return nil, &XAttrError{"getxattr", path, name, os.Errno(e)}
 	}
 	return data, nil
 }
@@ -38,9 +37,9 @@ func Getxattr(path, name string) ([]byte, os.Error) {
 // Retrieves a list of names of extended attributes associated with the 
 // given path in the file system.
 func Listxattr(path string) ([]string, os.Error) {
-	buf, err := syscall.Listxattr(path)
-	if err != 0 {
-		return nil, &XAttrError{"listxattr", path, "", os.Errno(err)}
+	buf, e := listxattr(path)
+	if e!= 0 {
+		return nil, &XAttrError{"listxattr", path, "", os.Errno(e)}
 	}
 	return stripUserPrefix(nullTermToStrings(buf)), nil
 }
@@ -48,9 +47,9 @@ func Listxattr(path string) ([]string, os.Error) {
 // Associates name and data together as an attribute of path. 
 func Setxattr(path, name string, data []byte) os.Error {
 	name = userPrefix + name
-	err := syscall.Setxattr(path, name, data)
-	if err != 0 {
-		return &XAttrError{"setxattr", path, name, os.Errno(err)}
+	e:= setxattr(path, name, &data[0], len(data))
+	if e!= 0 {
+		return &XAttrError{"setxattr", path, name, os.Errno(e)}
 	}
 	return nil
 }
@@ -58,9 +57,9 @@ func Setxattr(path, name string, data []byte) os.Error {
 // Remove the attribute.
 func Removexattr(path, name string) os.Error {
 	name = userPrefix + name
-	err := syscall.Removexattr(path, name)
-	if err != 0 {
-		return &XAttrError{"removexattr", path, name, os.Errno(err)}
+	e:= removexattr(path, name)
+	if e!= 0 {
+		return &XAttrError{"removexattr", path, name, os.Errno(e)}
 	}
 	return nil
 }
