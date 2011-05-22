@@ -1,5 +1,9 @@
 package xattr
 
+import (
+	"os"
+)
+
 // XAttrError records an error and the operation, file path and attribute that caused it.
 type XAttrError struct {
 	Op    string
