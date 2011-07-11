@@ -11,6 +11,7 @@ func main() {
 	print := flag.Bool("p", false, "print")
 	write := flag.Bool("w", false, "write")
 	delete := flag.Bool("d", false, "delete")
+	long := flag.Bool("l", false, "long")
 	flag.Parse()
 
 	switch {
@@ -18,7 +19,11 @@ func main() {
 		name := flag.Arg(0)
 		for _, file := range flag.Args()[1:] {
 			value, _ := xattr.Getxattr(file, name)
-			fmt.Println(value)
+			if *long {
+				fmt.Printf("%s: %s\n", name, value)
+			} else {
+				fmt.Println(string(value))
+			}
 		}
 	case *write:
 		name, value := flag.Arg(0), flag.Arg(1)
@@ -32,9 +37,14 @@ func main() {
 		}
 	default:
 		for _, file := range flag.Args() {
-			values, _ := xattr.Listxattr(file)
-			for _, value := range values {
-				fmt.Println(value)
+			names, _ := xattr.Listxattr(file)
+			for _, name := range names {
+				if *long {
+					value, _ := xattr.Getxattr(file, name)
+					fmt.Printf("%s: %s\n", name, value)
+				} else {
+					fmt.Println(name)
+				}
 			}
 		}
 	}
