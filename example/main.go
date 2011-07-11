@@ -4,23 +4,38 @@ import (
 	"fmt"
 	"github.com/davecheney/xattr"
 	"flag"
-	"log"
 )
 
 func main() {
-	argv := flag.Args()
-	err := xattr.Setxattr(argv[0], argv[1], []byte(argv[2]))
-	if err != nil {
-		log.Fatal(err)
+	// top level flags
+	print := flag.Bool("p", false, "print")
+	write := flag.Bool("w", false, "write")
+	delete := flag.Bool("d", false, "delete")
+	flag.Parse()
+
+	switch {
+	case *print:
+		name := flag.Arg(0)
+		for _, file := range flag.Args()[1:] {
+			value, _ := xattr.Getxattr(file, name)
+			fmt.Println(value)
+		}
+	case *write:
+		name, value := flag.Arg(0), flag.Arg(1)
+		for _, file := range flag.Args()[2:] {
+			xattr.Setxattr(file, name, []byte(value))
+		}
+	case *delete:
+		name := flag.Arg(0)
+		for _, file := range flag.Args()[1:] {
+			xattr.Removexattr(file, name)
+		}
+	default:
+		for _, file := range flag.Args() {
+			values, _ := xattr.Listxattr(file)
+			for _, value := range values {
+				fmt.Println(value)
+			}
+		}
 	}
-	list, err := xattr.Listxattr(argv[0])
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("%s: %#v\n", argv[0], list)
-	value, err := xattr.Getxattr(argv[0], argv[1])
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("%s: %s\n", argv[1], string(value))
 }
