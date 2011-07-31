@@ -33,4 +33,35 @@ A example program is provided with the source. The simplest way to compile and i
 
 This will install it to your $GOBIN directory. If you have trouble running this example, make sure there isn't another xattr somewhere higher in your $PATH.
 
+Before you start
+----------------
+
+All extended attributes need a file to be associated with. In this example I'm going to create an empty file in my home directory (see notes in the installation section)
+
+    touch ~/testfile
+
+Setting an attribute
+--------------------
+
+    % $GOBIN/xattr -w username dave ~/testfile
+
+Listing known attributes
+--------------------
+  
+    % $GOBIN/xattr ~/testfile
+    username
+
+Printing attribute values
+-------------------------
+ 
+    % $GOBIN/xattr -p username ~/testfile
+    dave
+
+Listing names and values
+------------------------
+
+     % $GOBIN/xattr -l ~/testfile
+     username: dave
+
+
 
