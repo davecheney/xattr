@@ -2,7 +2,6 @@ package xattr
 
 import (
 	"strings"
-	"os"
 )
 
 const (
@@ -13,55 +12,53 @@ const (
 // transparently for Get/Set/Remove and hidden in List
 
 // Retrieve extended attribute data associated with path.
-func Getxattr(path, name string) ([]byte, os.Error) {
+func Getxattr(path, name string) ([]byte, error) {
 	name = userPrefix + name
 	// find size.
-	size, e := getxattr(path, name, nil, 0)
-	if e != 0 {
-		return nil, &XAttrError{"getxattr", path, name, os.Errno(e)}
+	size, err := getxattr(path, name, nil, 0)
+	if err != nil {
+		return nil, &XAttrError{"getxattr", path, name, err}
 	}
 	buf := make([]byte, size)
 	// Read into buffer of that size.
-	read, e := getxattr(path, name, &buf[0], size)
-	if e != 0 {
-		return nil, &XAttrError{"getxattr", path, name, os.Errno(e)}
+	read, err := getxattr(path, name, &buf[0], size)
+	if err != nil {
+		return nil, &XAttrError{"getxattr", path, name, err}
 	}
 	return buf[:read], nil
 }
 
 // Retrieves a list of names of extended attributes associated with the 
 // given path in the file system.
-func Listxattr(path string) ([]string, os.Error) {
+func Listxattr(path string) ([]string, error) {
 	// find size.
-	size, e := listxattr(path, nil, 0)
-	if e != 0 {
-		return nil, &XAttrError{"listxattr", path, "", os.Errno(e)}
+	size, err := listxattr(path, nil, 0)
+	if err != nil {
+		return nil, &XAttrError{"listxattr", path, "", err}
 	}
 	buf := make([]byte, size)
 	// Read into buffer of that size.
-	read, e := listxattr(path, &buf[0], size)
-	if e != 0 {
-		return nil, &XAttrError{"listxattr", path, "", os.Errno(e)}
+	read, err := listxattr(path, &buf[0], size)
+	if err != nil {
+		return nil, &XAttrError{"listxattr", path, "", err}
 	}
 	return stripUserPrefix(nullTermToStrings(buf[:read])), nil
 }
 
 // Associates name and data together as an attribute of path. 
-func Setxattr(path, name string, data []byte) os.Error {
+func Setxattr(path, name string, data []byte) error {
 	name = userPrefix + name
-	e := setxattr(path, name, &data[0], len(data))
-	if e != 0 {
-		return &XAttrError{"setxattr", path, name, os.Errno(e)}
+	if err := setxattr(path, name, &data[0], len(data)); err != nil {
+		return &XAttrError{"setxattr", path, name, err}
 	}
 	return nil
 }
 
 // Remove the attribute.
-func Removexattr(path, name string) os.Error {
+func Removexattr(path, name string) error {
 	name = userPrefix + name
-	e:= removexattr(path, name)
-	if e!= 0 {
-		return &XAttrError{"removexattr", path, name, os.Errno(e)}
+	if err := removexattr(path, name); err != nil {
+		return &XAttrError{"removexattr", path, name, err}
 	}
 	return nil
 }

@@ -1,19 +1,15 @@
 package xattr
 
-import (
-	"os"
-)
-
 // XAttrError records an error and the operation, file path and attribute that caused it.
 type XAttrError struct {
-	Op    string
-	Path  string
-	Name  string
-	Error os.Error
+	Op   string
+	Path string
+	Name string
+	Err  error
 }
 
-func (e *XAttrError) String() string {
-	return e.Op + " " + e.Path + " " + e.Name + ": " + e.Error.String()
+func (e *XAttrError) Error() string {
+	return e.Op + " " + e.Path + " " + e.Name + ": " + e.Err.Error()
 }
 
 // Convert an array of NUL terminated UTF-8 strings
