@@ -3,6 +3,7 @@ package xattr_test
 import (
         "io/ioutil"
         "os"
+        "runtime"
         "testing"
 
         . "."
@@ -53,7 +54,11 @@ func (f *F) TestFlow(c *C) {
         c.Check(data1, DeepEquals, data)
 
         data1, err = Getxattr(f.f, "test other xattr")
-        c.Check(err, ErrorMatches, "*. attribute not found")
+        if runtime.GOOS == "linux" {
+                c.Check(err, ErrorMatches, "*. no data available")
+        } else {
+                c.Check(err, ErrorMatches, "*. attribute not found")
+        }
         c.Check(err, FitsTypeOf, &XAttrError{})
         c.Check(data1, IsNil)
 
