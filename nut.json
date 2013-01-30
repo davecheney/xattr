@@ -1,0 +1,17 @@
+{
+  "Version": "1.0.0",
+  "Authors": [
+    {
+      "FullName": "Dave Cheney"
+    },
+    {
+      "FullName": "Alexey Palazhchenko",
+      "Email": "alexey.palazhchenko@gmail.com"
+    }
+  ],
+  "ExtraFiles": [
+    "README.md",
+    "LICENCE"
+  ],
+  "Homepage": "https://github.com/AlekSi/xattr"
+}
