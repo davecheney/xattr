@@ -37,6 +37,7 @@ func (f *F) TearDownTest(c *C) {
 
 func (f *F) TestFlow(c *C) {
 	data := []byte("test xattr data")
+	attr2 := "text xattr 2"
 
 	attrs, err := List(f.f)
 	c.Check(err, IsNil)
@@ -48,6 +49,13 @@ func (f *F) TestFlow(c *C) {
 	attrs, err = List(f.f)
 	c.Check(err, IsNil)
 	c.Check(attrs, DeepEquals, []string{f.attr})
+
+	err = Set(f.f, attr2, data)
+	c.Check(err, IsNil)
+
+	attrs, err = List(f.f)
+	c.Check(err, IsNil)
+	c.Check(attrs, DeepEquals, []string{f.attr, attr2})
 
 	data1, err := Get(f.f, f.attr)
 	c.Check(err, IsNil)
@@ -63,6 +71,13 @@ func (f *F) TestFlow(c *C) {
 	c.Check(data1, IsNil)
 
 	err = Remove(f.f, f.attr)
+	c.Check(err, IsNil)
+
+	attrs, err = List(f.f)
+	c.Check(err, IsNil)
+	c.Check(attrs, DeepEquals, []string{attr2})
+
+	err = Remove(f.f, attr2)
 	c.Check(err, IsNil)
 
 	attrs, err = List(f.f)
