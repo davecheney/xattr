@@ -1,7 +1,7 @@
 // Package xattr provides a simple interface to user extended attributes on Linux and OSX.
 // Support for xattrs is filesystem dependant, so not a given even if you are running one of those operating systems.
 //
-// On Linux you have to edit `/etc/fstab` to include `user_xattr`. Also, Linux extended attributes have a manditory
+// On Linux you have to edit /etc/fstab to include "user_xattr". Also, Linux extended attributes have a manditory
 // prefix of "user.". This is prepended transparently for Get/Set/Remove and hidden in List.
 package xattr
 
