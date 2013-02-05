@@ -68,6 +68,7 @@ func (f *F) TestFlow(c *C) {
 		c.Check(err, ErrorMatches, "*. attribute not found")
 	}
 	c.Check(err, FitsTypeOf, &XAttrError{})
+	c.Check(IsNotExist(err), Equals, true)
 	c.Check(data1, IsNil)
 
 	err = Remove(f.f, f.attr)

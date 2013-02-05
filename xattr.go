@@ -17,6 +17,15 @@ func (e *XAttrError) Error() string {
 	return e.Op + " " + e.Path + " " + e.Attr + ": " + e.Err.Error()
 }
 
+// Returns whether the error is known to report that a extended attribute does not exist.
+func IsNotExist(err error) bool {
+	e, ok := err.(*XAttrError)
+	if ok {
+		return isNotExist(e)
+	}
+	return false
+}
+
 // Converts an array of NUL terminated UTF-8 strings
 // to a []string.
 func nullTermToStrings(buf []byte) (result []string) {

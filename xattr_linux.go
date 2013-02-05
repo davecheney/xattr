@@ -2,6 +2,7 @@ package xattr
 
 import (
 	"strings"
+	"syscall"
 )
 
 const (
@@ -16,4 +17,8 @@ func stripPrefix(s []string) []string {
 		}
 	}
 	return s
+}
+
+func isNotExist(err *XAttrError) bool {
+	return err.Err == syscall.ENODATA
 }
