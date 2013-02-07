@@ -1,5 +1,5 @@
 {
-  "Version": "1.0.0",
+  "Version": "1.1.0",
   "Authors": [
     {
       "FullName": "Dave Cheney"
@@ -11,7 +11,8 @@
   ],
   "ExtraFiles": [
     "README.md",
-    "LICENCE"
+    "LICENCE",
+    "CHANGELOG"
   ],
   "Homepage": "https://github.com/AlekSi/xattr"
 }

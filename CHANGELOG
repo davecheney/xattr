@@ -1,0 +1,6 @@
+1.1.0 (2012-02-07):
+ - Start this change log.
+ - Add IsNotExist()
+
+1.0.0:
+ - Initial version.
