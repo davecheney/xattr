@@ -1,9 +1,9 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/davecheney/xattr"
-	"flag"
 )
 
 func main() {

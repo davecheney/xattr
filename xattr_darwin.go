@@ -16,7 +16,7 @@ func Getxattr(path, name string) ([]byte, error) {
 	return buf[:read], nil
 }
 
-// Retrieves a list of names of extended attributes associated with the 
+// Retrieves a list of names of extended attributes associated with the
 // given path in the file system.
 func Listxattr(path string) ([]string, error) {
 	// find size.
@@ -33,7 +33,7 @@ func Listxattr(path string) ([]string, error) {
 	return nullTermToStrings(buf[:read]), nil
 }
 
-// Associates name and data together as an attribute of path. 
+// Associates name and data together as an attribute of path.
 func Setxattr(path, name string, data []byte) error {
 	if err := setxattr(path, name, &data[0], len(data), 0, 0); err != nil {
 		return &XAttrError{"setxattr", path, name, err}
